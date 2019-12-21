@@ -1,13 +1,4 @@
-Input Possibilities:
---------------------
-
-node head.js <fileName>                                    =>(content || lessThan 10 lines || error )
-node head.js -n 4 <fileName>                               =>(content || lessThan given no of lines || error || invalid number)
-node head.js ||  (cat <fileName> | node head.js)           =>(content || lessThan given no of lines || error )
-node head.js -n 4 || (cat <fileName> | node head.js -n 4)  =>(content || lessThan given no of lines || error || invalid number)
-node head.js <file1> <file2>                               =>(content || lessThan given no lines || error)
-node head.js -n 4 <file1> <file2>                          =>(content || lessThan given no lines || error || invalid number)
-
+--------------Head Program Flow----------
 
 [1.0] :
   if currentFileNo and files length is equal then quit otherwise go to [2a]
@@ -66,5 +57,5 @@ node head.js -n 4 <file1> <file2>                          =>(content || lessTha
     ['node', 'head.js', '-n', '4', 'file1']
     ['node', 'head.js','file1', file2]
     ['node', 'head.js', '-n', '4', 'file1', file2]
-  Name => validateUserOptions
+  Name => parseUserOptions
   
