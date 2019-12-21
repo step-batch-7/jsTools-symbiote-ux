@@ -1,0 +1,45 @@
+------------Input Possibilities:
+---------------------------------------------------
+
+[1]:
+(a):=> node head.js <fileName>                                           //more than ten lines =>  gives starting ten lines
+(b):=> node head.js <fileName>                                           // less than ten lines => takes the whole lines in the file
+(c):=> node head.js <noFilePresent>                                      // throws error : no such file or directory
+
+[2]:
+(a):=> node head.js -n 4 <fileName>                                      // gives starting lines according to the count value
+(b):=> node head.js -n 4 <noFilePresent>                                 // throws error : no such file or directory
+(c):=> node head.js -n a < fileName>                                     // throws error : illegal count
+
+[3]:
+(a):=> node head.js <fileName1> <fileName2>                              // more than ten lines => gives starting ten lines of both files 
+(b):=> node head.js <fileName1> <fileName2>                              // less than ten lines in file1 => takes the whole lines in the file1 
+                                                                            and gives starting ten lines of the second file
+
+(c):=> node head.js <noFilePresent> <fileName>                           // throw error for the file1 and gives the starting ten lines of file2
+(d):=> node head.js <fileName> <noFilePresent>                           // gives starting ten lines of the file1 and throws error for the file2
+
+[4]:
+(a):=> node head.js -n 4 <fileName1> <fileName2>                              // more than given count value of lines => gives starting  lines of both files  according to the count value
+(b):=> node head.js -n4 <fileName1> <fileName2>                              // less than given count value of lines in file1 => takes the whole lines in the file1 and 
+                                                                            and gives starting  lines of the second file according to count value
+
+(c):=> node head.js -n 4 <noFilePresent> <fileName>                           // throw error for the file1 and gives the starting lines of file2 according to count value
+(d):=> node head.js -n 4 <fileName> <noFilePresent>                           // gives starting lines of the file1 according to count value and throws error for the file2
+(e):=> node head.js -n a <fileName1> <fileName2>                             // throw error : illegal count
+
+[5]:
+(a):=> node head.js                                                          // waits for the input from stdin and gives output , it repeats it for ten times
+(b):=> node head.js -n 2                                                     // waits for the input from stdin and gives output, it repeats it according to given count value
+(c):=> node head.js -n a                                                     // throws error : illegal count
+
+[6]:
+(a):=> cat <fileName> | node head.js                                        // more than ten lines => gives the starting ten lines of the file
+(b):=> cat <fileName> | node head.js                                        // less than ten lines => takes the whole lines 
+(c):=> cat <noFilePresent> | node head.js                                   // throws error : no such file or directory
+
+[7]:
+(a):=> cat <fileName> | node head.js -n 4                                    // more than ten lines => gives the starting lines of the file according to the count value
+(b):=> cat <fileName> | node head.js                                        // less than lines as count Value=> takes the whole lines 
+(c):=> cat <noFilePresent> | node head.js -n 4                               // throws error : no such file or directory
+(d):=> cat <fileName> | node head.js -n a                                    //throws error : illegal count 
