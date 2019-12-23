@@ -1,6 +1,7 @@
 const loadLines = function(reader, path, encoding) {
-  const fileContent = reader(path, encoding);
-  return fileContent.split("\n");
+  let fileContent = reader(path, encoding);
+  fileContent = { lines: fileContent.split("\n") };
+  return fileContent;
 };
 
 module.exports = { loadLines };
