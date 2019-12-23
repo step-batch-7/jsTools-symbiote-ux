@@ -1,0 +1,5 @@
+node head.js ./appTests/file1.txt
+one
+two
+three
+four
