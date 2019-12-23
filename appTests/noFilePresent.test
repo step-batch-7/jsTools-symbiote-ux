@@ -1,0 +1,4 @@
+node head.js ./appTests/noFilePresent.txt
+{
+  error: 'head: ./appTests/noFilePresent.txt: No such file or directory'
+}

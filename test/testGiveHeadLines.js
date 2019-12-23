@@ -14,4 +14,13 @@ describe("giveHeadLines", () => {
     const expected = "1\n2\n3\n4";
     assert.strictEqual(actual, expected);
   });
+  it("should print error message if fileContent contains error Text", () => {
+    const actual = giveHeadLines({
+      error: `head: noPath : No such file or directory`
+    });
+    const expected = {
+      error: `head: noPath : No such file or directory`
+    };
+    assert.deepStrictEqual(actual, expected);
+  });
 });
