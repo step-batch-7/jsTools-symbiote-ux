@@ -1,4 +1,2 @@
 node head.js ./appTests/noFilePresent.txt
-{
-  error: 'head: ./appTests/noFilePresent.txt: No such file or directory'
-}
+head : no such file or directory

@@ -4,6 +4,8 @@ const { giveHeadLines } = require("../src/giveHeadLines");
 describe("giveHeadLines", () => {
   it("gives the starting ten lines of the file if file contains more than ten lines as text ", () => {
     const actual = giveHeadLines({
+      count: 10,
+      filePath: "path",
       lines: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
     });
     const expected = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10";
@@ -15,12 +17,9 @@ describe("giveHeadLines", () => {
     assert.strictEqual(actual, expected);
   });
   it("should print error message if fileContent contains error Text", () => {
-    const actual = giveHeadLines({
-      error: `head: noPath : No such file or directory`
-    });
-    const expected = {
-      error: `head: noPath : No such file or directory`
-    };
-    assert.deepStrictEqual(actual, expected);
+    assert.deepStrictEqual(
+      giveHeadLines(null),
+      `head : no such file or directory`
+    );
   });
 });

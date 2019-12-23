@@ -1,3 +1,4 @@
+node head.js -n 15 ./appTests/file.txt
 one
 two
 three

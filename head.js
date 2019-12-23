@@ -8,8 +8,7 @@ const main = function() {
   const reader = fs.readFileSync;
   const isFileExists = fs.existsSync;
   const userOptions = parseUserOptions(usrArgs);
-  const path = userOptions["filePath"];
-  const fileContent = loadLines(reader, isFileExists, path, "utf8");
+  const fileContent = loadLines(reader, isFileExists, userOptions, "utf8");
   console.log(giveHeadLines(fileContent));
 };
 

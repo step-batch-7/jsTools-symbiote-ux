@@ -1,10 +1,8 @@
-const loadLines = function(reader, isFileExists, path, encoding) {
-  if (isFileExists(path)) {
-    let fileContent = reader(path, encoding);
-    fileContent = { lines: fileContent.split("\n") };
-    return fileContent;
-  }
-  return { error: `head: ${path}: No such file or directory` };
+const loadLines = function(reader, isFileExists, userOptions, encoding) {
+  if (!isFileExists(userOptions.filePath)) return null;
+  const fileContent = reader(userOptions.filePath, encoding);
+  userOptions.lines = fileContent.split("\n");
+  return userOptions;
 };
 
 module.exports = { loadLines };

@@ -1,5 +1,5 @@
 node head.js ./appTests/file.txt
-one 
+one
 two
 three
 four
@@ -8,4 +8,4 @@ six
 seven
 eight
 nine
-ten 
+ten
