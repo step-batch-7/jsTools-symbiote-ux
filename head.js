@@ -1,5 +1,4 @@
 const fs = require("fs");
-
 const { stdout, stderr } = process;
 const { head } = require("./src/headLib");
 

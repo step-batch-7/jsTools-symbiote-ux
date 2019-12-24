@@ -1,0 +1,2 @@
+node head.js -n a ./appTests/file.txt
+head : a illegal count

@@ -1,11 +1,15 @@
 const parseUserOptions = function(usrArgs) {
   if (usrArgs.includes("-n")) {
+    if (!(Number.isInteger(+usrArgs[3]) && +usrArgs[3] > 0)) {
+      return { error: `head : ${usrArgs[3]} illegal count` };
+    }
     return { count: usrArgs[3], filePath: usrArgs[4] };
   }
   return { count: 10, filePath: usrArgs[2] };
 };
 
 const loadLines = function(reader, isFileExists, userOptions, encoding) {
+  if (userOptions.error) return userOptions;
   if (!isFileExists(userOptions.filePath)) {
     return {
       error: `head : ${userOptions.filePath} : no such file or directory`
