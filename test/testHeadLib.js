@@ -14,7 +14,7 @@ describe("parseUserOptions", () => {
   });
   it("it gives the error message in object, error as key , if count value is not valid", () => {
     const actual = parseUserOptions(["node", "head.js", "-n", "a", "file1"]);
-    const expected = { error: `head : a illegal count` };
+    const expected = { error: `head : a illegal count`, lines: "" };
     assert.deepStrictEqual(actual, expected);
   });
 });
@@ -31,12 +31,7 @@ describe("loadLines", () => {
       assert.strictEqual(path, "path");
       return true;
     };
-    const actual = loadLines(
-      reader,
-      isFileExists,
-      { count: 10, filePath: "path" },
-      "utf8"
-    );
+    const actual = loadLines(reader, isFileExists, { count: 10, filePath: "path" }, "utf8");
     const expected = {
       lines: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
     };
@@ -53,14 +48,10 @@ describe("loadLines", () => {
       assert.strictEqual(path, "path");
       return false;
     };
-    const actual = loadLines(
-      reader,
-      isFileExists,
-      { filePath: "path" },
-      "utf8"
-    );
+    const actual = loadLines(reader, isFileExists, { filePath: "path" }, "utf8");
     assert.deepStrictEqual(actual, {
-      error: `head : path : no such file or directory`
+      error: `head : path : no such file or directory`,
+      lines: ""
     });
   });
 });
@@ -80,7 +71,8 @@ describe("head", () => {
     };
     const actual = head(userArgs, reader, isFileExists);
     assert.deepStrictEqual(actual, {
-      error: `head : path : no such file or directory`
+      error: `head : path : no such file or directory`,
+      lines: ""
     });
   });
   it("should give error for the given userArgs ,if file is not present", () => {
@@ -96,7 +88,7 @@ describe("head", () => {
       return true;
     };
     const actual = head(userArgs, reader, isFileExists);
-    assert.deepStrictEqual(actual, { lines: "1\n2\n3\n4" });
+    assert.deepStrictEqual(actual, { lines: "1\n2\n3\n4", error: "" });
   });
   it("should give error for the given userArgs ,if count value is invalid", () => {
     const userArgs = ["node", "head.js", "-n", "a", "path"];
@@ -111,6 +103,6 @@ describe("head", () => {
       return true;
     };
     const actual = head(userArgs, reader, isFileExists);
-    assert.deepStrictEqual(actual, { error: `head : a illegal count` });
+    assert.deepStrictEqual(actual, { error: `head : a illegal count`, lines: "" });
   });
 });
