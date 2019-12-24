@@ -1,34 +1,29 @@
 const parseUserOptions = function(usrArgs) {
-  if (usrArgs.includes("-n")) {
+  if (usrArgs[2] == "-n") {
     if (!(Number.isInteger(+usrArgs[3]) && +usrArgs[3] > 0)) {
       return { error: `head : ${usrArgs[3]} illegal count` };
     }
-    return { count: usrArgs[3], filePath: usrArgs[4] };
+    return { count: +usrArgs[3], filePath: usrArgs[4] };
   }
   return { count: 10, filePath: usrArgs[2] };
 };
 
-const loadLines = function(reader, isFileExists, userOptions, encoding) {
-  if (userOptions.error) return userOptions;
+const loadLines = function(read, isFileExists, userOptions, encoding) {
   if (!isFileExists(userOptions.filePath)) {
     return {
       error: `head : ${userOptions.filePath} : no such file or directory`
     };
   }
-  const fileContent = reader(userOptions.filePath, encoding);
-  userOptions.lines = fileContent.split("\n");
-  return userOptions;
+  const fileContent = read(userOptions.filePath, encoding);
+  return { lines: fileContent.split("\n") };
 };
 
-const giveHeadLines = function(fileContent) {
-  if (fileContent.error) return fileContent;
-  return { lines: fileContent["lines"].slice(0, fileContent.count).join("\n") };
-};
-
-const head = function(usrArgs, reader, isFileExists) {
+const head = function(usrArgs, read, isFileExists) {
   const userOptions = parseUserOptions(usrArgs);
-  const fileContent = loadLines(reader, isFileExists, userOptions, "utf8");
-  return giveHeadLines(fileContent);
+  if (userOptions.error) return userOptions;
+  const fileContent = loadLines(read, isFileExists, userOptions, "utf8");
+  if (fileContent.error) return fileContent;
+  return { lines: fileContent["lines"].slice(0, userOptions.count).join("\n") };
 };
 
-module.exports = { parseUserOptions, loadLines, giveHeadLines, head };
+module.exports = { parseUserOptions, loadLines, head };
