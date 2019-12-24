@@ -1,9 +1,6 @@
 const { stdout, stderr } = process;
-
 const fs = require("fs");
-const { parseUserOptions } = require("./src/parseUserOptions");
-const { loadLines } = require("./src/loadLines");
-const { giveHeadLines } = require("./src/giveHeadlines");
+const { parseUserOptions, loadLines, giveHeadLines } = require("./src/headLib");
 
 const main = function() {
   const usrArgs = process.argv;
