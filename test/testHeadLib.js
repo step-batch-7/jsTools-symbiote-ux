@@ -2,7 +2,8 @@ const assert = require("chai").assert;
 const {
   parseUserOptions,
   loadLines,
-  giveHeadLines
+  giveHeadLines,
+  head
 } = require("../src/headLib");
 
 describe("parseUserOptions", () => {
@@ -87,5 +88,15 @@ describe("giveHeadLines", () => {
     });
     const expected = { error: `head : noPath : no such file or directory` };
     assert.deepStrictEqual(actual, expected);
+  });
+});
+
+describe("head", () => {
+  it("should give error for the given userArgs ,if file is not present", () => {
+    const userArgs = ["node", "head.js", "-n", "4", "noPath"];
+    const actual = head(userArgs);
+    assert.deepStrictEqual(actual, {
+      error: `head : noPath : no such file or directory`
+    });
   });
 });
