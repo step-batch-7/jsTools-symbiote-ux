@@ -38,8 +38,14 @@ describe("loadLines", () => {
       assert.strictEqual(path, "path");
       return false;
     };
-    assert.isNull(
-      loadLines(reader, isFileExists, { filePath: "path" }, "utf8")
+    const actual = loadLines(
+      reader,
+      isFileExists,
+      { filePath: "path" },
+      "utf8"
     );
+    assert.deepStrictEqual(actual, {
+      error: `head : path : no such file or directory`
+    });
   });
 });

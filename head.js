@@ -1,3 +1,5 @@
+const { stdout, stderr } = process;
+
 const fs = require("fs");
 const { parseUserOptions } = require("./src/parseUserOptions");
 const { loadLines } = require("./src/loadLines");
@@ -9,7 +11,9 @@ const main = function() {
   const isFileExists = fs.existsSync;
   const userOptions = parseUserOptions(usrArgs);
   const fileContent = loadLines(reader, isFileExists, userOptions, "utf8");
-  console.log(giveHeadLines(fileContent));
+  const outcome = giveHeadLines(fileContent);
+  outcome.lines && stdout.write(outcome.lines);
+  outcome.error && stderr.write(outcome.error);
 };
 
 main();
