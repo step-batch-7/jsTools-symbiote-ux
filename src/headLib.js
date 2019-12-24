@@ -1,5 +1,3 @@
-const fs = require("fs");
-
 const parseUserOptions = function(usrArgs) {
   if (usrArgs.includes("-n")) {
     return { count: usrArgs[3], filePath: usrArgs[4] };
@@ -19,13 +17,11 @@ const loadLines = function(reader, isFileExists, userOptions, encoding) {
 };
 
 const giveHeadLines = function(fileContent) {
-  if (fileContent.hasOwnProperty("error")) return fileContent;
+  if (fileContent.error) return fileContent;
   return { lines: fileContent["lines"].slice(0, fileContent.count).join("\n") };
 };
 
-const head = function(usrArgs) {
-  const reader = fs.readFileSync;
-  const isFileExists = fs.existsSync;
+const head = function(usrArgs, reader, isFileExists) {
   const userOptions = parseUserOptions(usrArgs);
   const fileContent = loadLines(reader, isFileExists, userOptions, "utf8");
   return giveHeadLines(fileContent);

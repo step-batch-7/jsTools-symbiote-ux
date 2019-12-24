@@ -93,10 +93,35 @@ describe("giveHeadLines", () => {
 
 describe("head", () => {
   it("should give error for the given userArgs ,if file is not present", () => {
-    const userArgs = ["node", "head.js", "-n", "4", "noPath"];
-    const actual = head(userArgs);
+    const userArgs = ["node", "head.js", "-n", "4", "path"];
+    const reader = function(path, encoding) {
+      assert.strictEqual(path, "path");
+      assert.strictEqual(encoding, "utf8");
+      return;
+    };
+
+    const isFileExists = function(path) {
+      assert.strictEqual(path, "path");
+      return false;
+    };
+    const actual = head(userArgs, reader, isFileExists);
     assert.deepStrictEqual(actual, {
-      error: `head : noPath : no such file or directory`
+      error: `head : path : no such file or directory`
     });
+  });
+  it("should give error for the given userArgs ,if file is not present", () => {
+    const userArgs = ["node", "head.js", "-n", "4", "path"];
+    const reader = function(path, encoding) {
+      assert.strictEqual(path, "path");
+      assert.strictEqual(encoding, "utf8");
+      return "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11";
+    };
+
+    const isFileExists = function(path) {
+      assert.strictEqual(path, "path");
+      return true;
+    };
+    const actual = head(userArgs, reader, isFileExists);
+    assert.deepStrictEqual(actual, { lines: "1\n2\n3\n4" });
   });
 });
