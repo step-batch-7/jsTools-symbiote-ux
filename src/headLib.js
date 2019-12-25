@@ -1,11 +1,12 @@
 const parseUserOptions = function(usrArgs) {
+  const count = +usrArgs[3];
   const noOfLinesGiven = usrArgs[2] == "-n";
-  const countIsInteger = Number.isInteger(+usrArgs[3]);
+  const countIsInteger = Number.isInteger(count);
   const errorMsg = { error: `head : ${usrArgs[3]} illegal count`, lines: "" };
   const userOptionsWithDefaultCount = { count: 10, filePath: usrArgs[2] };
-  const userOptionsWithGivenCount = { count: +usrArgs[3], filePath: usrArgs[4] };
+  const userOptionsWithGivenCount = { count: count, filePath: usrArgs[4] };
   if (noOfLinesGiven) {
-    if (!(countIsInteger && +usrArgs[3] > 0)) return errorMsg;
+    if (!(countIsInteger && count > 0)) return errorMsg;
     return userOptionsWithGivenCount;
   }
   return userOptionsWithDefaultCount;
