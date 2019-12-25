@@ -17,6 +17,16 @@ describe("parseUserOptions", () => {
     const expected = { error: `head : a illegal count`, lines: "" };
     assert.deepStrictEqual(actual, expected);
   });
+  it("it gives the error message in object, error as key , if count value is zero", () => {
+    const actual = parseUserOptions(["node", "head.js", "-n", "0", "file1"]);
+    const expected = { error: `head : 0 illegal count`, lines: "" };
+    assert.deepStrictEqual(actual, expected);
+  });
+  it("it gives the error message in object, error as key , if count value is a negative number", () => {
+    const actual = parseUserOptions(["node", "head.js", "-n", "-1", "file1"]);
+    const expected = { error: `head : -1 illegal count`, lines: "" };
+    assert.deepStrictEqual(actual, expected);
+  });
 });
 
 describe("loadLines", () => {
