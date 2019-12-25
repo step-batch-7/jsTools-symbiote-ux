@@ -31,7 +31,7 @@ describe("loadLines", () => {
       assert.strictEqual(path, "path");
       return true;
     };
-    const actual = loadLines(reader, isFileExists,  "path" , "utf8");
+    const actual = loadLines(reader, isFileExists, "path", "utf8");
     const expected = {
       lines: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
     };
@@ -48,7 +48,7 @@ describe("loadLines", () => {
       assert.strictEqual(path, "path");
       return false;
     };
-    const actual = loadLines(reader, isFileExists,"path" , "utf8");
+    const actual = loadLines(reader, isFileExists, "path", "utf8");
     assert.deepStrictEqual(actual, {
       error: `head : path : no such file or directory`,
       lines: ""
