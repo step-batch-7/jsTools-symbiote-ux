@@ -22,9 +22,14 @@ describe("parseUserOptions", () => {
     const expected = { error: `head : 0 illegal count`, lines: "" };
     assert.deepStrictEqual(actual, expected);
   });
-  it("it gives the error message in object, error as key , if count value is a negative number", () => {
-    const actual = parseUserOptions(["node", "head.js", "-n", "-1", "file1"]);
-    const expected = { error: `head : -1 illegal count`, lines: "" };
+  it("it gives userOptions in the form of objects ,filePath and count as key if num is given with '-' ", () => {
+    const actual = parseUserOptions(["node", "head.js", "-1", "file1"]);
+    const expected = { count: 1, filePath: "file1" };
+    assert.deepStrictEqual(actual, expected);
+  });
+  it("it gives userOptions in the form of objects ,filePath and count as key,if option and count value is given as a string", () => {
+    const actual = parseUserOptions(["node", "head.js", "-n5", "file1"]);
+    const expected = { count: 5, filePath: "file1" };
     assert.deepStrictEqual(actual, expected);
   });
 });
