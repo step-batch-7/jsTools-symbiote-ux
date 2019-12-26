@@ -1,2 +1,0 @@
-node head.js -n -1 ./appTests/file.txt
-head : -1 illegal count

@@ -1,0 +1,3 @@
+node head.js -2 ./appTests/file.txt
+one
+two
