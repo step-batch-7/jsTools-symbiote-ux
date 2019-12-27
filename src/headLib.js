@@ -1,15 +1,19 @@
+const isIntegerNotZero = function(count) {
+  return Number.isInteger(+count) && +count != 0;
+};
+const isCountValid = function(option, count) {
+  return option.includes("-n") && isIntegerNotZero(count);
+};
+
 const parseUserOptions = function(usrArgs) {
-  const noOfLinesGiven = usrArgs[2].slice(0, 2) == "-n" || Number.isInteger(+usrArgs[2]);
-  const count = +usrArgs[2].slice(-1) || +usrArgs[3];
-  const countIsInteger = Number.isInteger(count);
-  const errorMsg = { error: `head : ${usrArgs[3]} illegal count`, lines: "" };
-  const defaultOptions = { count: 10, filePath: usrArgs[2] };
-  const userOptions = { count: count, filePath: usrArgs[usrArgs.length - 1] };
-  if (noOfLinesGiven) {
-    if (!(countIsInteger && count != 0)) return errorMsg;
-    return userOptions;
-  }
-  return defaultOptions;
+  const userOptions = { count: 10, filePath: usrArgs.slice(-1) };
+  const [, option, count] = [...usrArgs];
+  if (option.includes("-") && !option.slice(1).includes("n"))
+    return { count: option.slice(1), filePath: usrArgs.slice(-1) };
+  if (!option.includes("-n")) return userOptions;
+  userOptions.count = option.slice(2) || count;
+  if (isCountValid(option, userOptions.count)) return userOptions;
+  return { error: `head : ${userOptions.count} illegal count`, lines: "" };
 };
 
 const loadLines = function(read, isFileExists, filePath, encoding) {
@@ -23,9 +27,9 @@ const loadLines = function(read, isFileExists, filePath, encoding) {
 const head = function(usrArgs, read, isFileExists) {
   const userOptions = parseUserOptions(usrArgs);
   if (userOptions.error) return userOptions;
-  const fileContent = loadLines(read, isFileExists, userOptions.filePath, "utf8");
+  const fileContent = loadLines(read, isFileExists, userOptions.filePath[0], "utf8");
   if (fileContent.error) return fileContent;
-  return { lines: fileContent["lines"].slice(0, userOptions.count).join("\n"), error: "" };
+  return { lines: fileContent["lines"].slice(0, +userOptions.count).join("\n"), error: "" };
 };
 
 module.exports = { loadLines, head, parseUserOptions };
