@@ -7,7 +7,7 @@ const isCountValid = function(option, count) {
 
 const parseUserOptions = function(usrArgs) {
   const userOptions = { count: 10, filePath: usrArgs.slice(-1) };
-  const [, option, count] = [...usrArgs];
+  const [option, count] = [...usrArgs];
   if (option.includes("-") && !option.slice(1).includes("n"))
     return { count: option.slice(1), filePath: usrArgs.slice(-1) };
   if (!option.includes("-n")) return userOptions;

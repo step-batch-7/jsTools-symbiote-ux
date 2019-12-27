@@ -1,0 +1,2 @@
+node head.js -1 ./appTests/file1.txt
+one

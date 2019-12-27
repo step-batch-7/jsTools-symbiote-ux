@@ -3,32 +3,32 @@ const { loadLines, head, parseUserOptions } = require("../src/headLib");
 
 describe("parseUserOptions", () => {
   it("it gives userOptions in the form of objects ,filePath as key and default value of count", () => {
-    const actual = parseUserOptions(["head.js", "file1"]);
+    const actual = parseUserOptions(["file1"]);
     const expected = { count: 10, filePath: ["file1"] };
     assert.deepStrictEqual(actual, expected);
   });
   it("it gives userOptions in the form of objects ,filePath and count as key", () => {
-    const actual = parseUserOptions(["head.js", "-n", "3", "file1"]);
+    const actual = parseUserOptions(["-n", "3", "file1"]);
     const expected = { count: "3", filePath: ["file1"] };
     assert.deepStrictEqual(actual, expected);
   });
   it("it gives the error message in object, error as key , if count value is not valid", () => {
-    const actual = parseUserOptions(["head.js", "-n", "a", "file1"]);
+    const actual = parseUserOptions(["-n", "a", "file1"]);
     const expected = { error: `head : a illegal count`, lines: "" };
     assert.deepStrictEqual(actual, expected);
   });
   it("it gives the error message in object, error as key , if count value is zero", () => {
-    const actual = parseUserOptions(["head.js", "-n", "0", "file1"]);
+    const actual = parseUserOptions(["-n", "0", "file1"]);
     const expected = { error: `head : 0 illegal count`, lines: "" };
     assert.deepStrictEqual(actual, expected);
   });
   it("it gives userOptions in the form of objects ,filePath and count as key,if option and count value is given as a string", () => {
-    const actual = parseUserOptions(["head.js", "-n5", "file1"]);
+    const actual = parseUserOptions(["-n5", "file1"]);
     const expected = { count: "5", filePath: ["file1"] };
     assert.deepStrictEqual(actual, expected);
   });
   it("it gives userOptions in the form of objects ,filePath and count as key,if only count is given", () => {
-    const actual = parseUserOptions(["head.js", "-5", "file1"]);
+    const actual = parseUserOptions(["-5", "file1"]);
     const expected = { count: "5", filePath: ["file1"] };
     assert.deepStrictEqual(actual, expected);
   });
@@ -72,7 +72,7 @@ describe("loadLines", () => {
 
 describe("head", () => {
   it("should give error for the given userArgs ,if count value is invalid", () => {
-    const userArgs = ["head.js", "-n", "a", "path"];
+    const userArgs = ["-n", "a", "path"];
     const reader = function(path, encoding) {
       assert.strictEqual(path, "path");
       assert.strictEqual(encoding, "utf8");
@@ -87,7 +87,7 @@ describe("head", () => {
     assert.deepStrictEqual(actual, { error: `head : a illegal count`, lines: "" });
   });
   it("should give error for the given userArgs ,if file is not present", () => {
-    const userArgs = ["head.js", "-n", "4", "path"];
+    const userArgs = ["-n", "4", "path"];
     const reader = function(path, encoding) {
       assert.strictEqual(path, "path");
       assert.strictEqual(encoding, "utf8");
@@ -102,7 +102,7 @@ describe("head", () => {
     assert.deepStrictEqual(actual, { error: `head : path : no such file or directory`, lines: "" });
   });
   it("give the content of file , if the count value is valid and file is present", () => {
-    const userArgs = ["head.js", "-n", "4", "path"];
+    const userArgs = ["-n", "4", "path"];
     const reader = function(path, encoding) {
       assert.strictEqual(path, "path");
       assert.strictEqual(encoding, "utf8");
