@@ -13,12 +13,12 @@ const parseUserOptions = function(usrArgs) {
   if (!option.includes("-n")) return userOptions;
   userOptions.count = option.slice(2) || count;
   if (isCountValid(option, userOptions.count)) return userOptions;
-  return { error: `head : ${userOptions.count} illegal count`, lines: "" };
+  return { error: `head: illegal line count -- ${userOptions.count}`, lines: "" };
 };
 
 const loadLines = function(read, isFileExists, filePath, encoding) {
   if (!isFileExists(filePath)) {
-    return { error: `head : ${filePath} : no such file or directory`, lines: "" };
+    return { error: `head: ${filePath}: No such file or directory`, lines: "" };
   }
   const fileContent = read(filePath, encoding);
   return { lines: fileContent.split("\n") };

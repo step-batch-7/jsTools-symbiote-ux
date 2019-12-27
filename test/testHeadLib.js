@@ -14,12 +14,12 @@ describe("parseUserOptions", () => {
   });
   it("it gives the error message in object, error as key , if count value is not valid", () => {
     const actual = parseUserOptions(["-n", "a", "file1"]);
-    const expected = { error: `head : a illegal count`, lines: "" };
+    const expected = { error: `head: illegal line count -- a`, lines: "" };
     assert.deepStrictEqual(actual, expected);
   });
   it("it gives the error message in object, error as key , if count value is zero", () => {
     const actual = parseUserOptions(["-n", "0", "file1"]);
-    const expected = { error: `head : 0 illegal count`, lines: "" };
+    const expected = { error: `head: illegal line count -- 0`, lines: "" };
     assert.deepStrictEqual(actual, expected);
   });
   it("it gives userOptions in the form of objects ,filePath and count as key,if option and count value is given as a string", () => {
@@ -64,7 +64,7 @@ describe("loadLines", () => {
     };
     const actual = loadLines(reader, isFileExists, "path", "utf8");
     assert.deepStrictEqual(actual, {
-      error: `head : path : no such file or directory`,
+      error: `head: path: No such file or directory`,
       lines: ""
     });
   });
@@ -84,7 +84,7 @@ describe("head", () => {
       return true;
     };
     const actual = head(userArgs, reader, isFileExists);
-    assert.deepStrictEqual(actual, { error: `head : a illegal count`, lines: "" });
+    assert.deepStrictEqual(actual, { error: `head: illegal line count -- a`, lines: "" });
   });
   it("should give error for the given userArgs ,if file is not present", () => {
     const userArgs = ["-n", "4", "path"];
@@ -99,7 +99,7 @@ describe("head", () => {
       return false;
     };
     const actual = head(userArgs, reader, isFileExists);
-    assert.deepStrictEqual(actual, { error: `head : path : no such file or directory`, lines: "" });
+    assert.deepStrictEqual(actual, { error: `head: path: No such file or directory`, lines: "" });
   });
   it("give the content of file , if the count value is valid and file is present", () => {
     const userArgs = ["-n", "4", "path"];
