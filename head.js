@@ -1,10 +1,12 @@
-const fs = require("fs");
-const { head } = require("./src/headLib");
+const fs = require('fs');
+const { head } = require('./src/headLib');
+
+const displayHeadLines = data => process.stdout.write(data);
+const displayErrMsg = err => process.stderr.write(err);
 
 const main = function() {
-  const headOutcome = head(process.argv.slice(2), fs.readFileSync, fs.existsSync);
-  process.stdout.write(headOutcome.lines);
-  process.stderr.write(headOutcome.error);
+  const write = { displayHeadLines, displayErrMsg };
+  head(process.argv.slice(2), fs, write);
 };
 
 main();
