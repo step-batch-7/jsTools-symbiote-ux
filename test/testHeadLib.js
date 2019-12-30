@@ -1,6 +1,5 @@
 const assert = require('chai').assert;
 const sinon = require('sinon');
-const fs = require('fs');
 const { head, parseUserOptions } = require('../src/headLib');
 
 describe('parseUserOptions', () => {
@@ -50,9 +49,9 @@ describe('head', () => {
         assert.strictEqual(data, 'fileContent');
       }
     };
-    const read = fs;
+    const read = {};
     const fakeRead = sinon.fake.yieldsAsync(null, 'fileContent');
-    sinon.replace(read, 'readFile', fakeRead);
+    read.readFile = fakeRead;
     read.readFile('someFile', (err, data) => {
       assert.strictEqual(err, null);
       assert.strictEqual(data, 'fileContent');
@@ -67,9 +66,9 @@ describe('head', () => {
         assert.strictEqual(err, 'head: noPath: No such file or directory');
       }
     };
-    const read = fs;
+    const read = {};
     const fakeRead = sinon.fake.yieldsAsync('error', undefined);
-    sinon.replace(read, 'readFile', fakeRead);
+    read.readFile = fakeRead;
     read.readFile('someFile', (err, data) => {
       assert.strictEqual(err, 'error');
       assert.strictEqual(data, undefined);

@@ -9,7 +9,7 @@ const isCountValid = function(option, count) {
 const parseUserOptions = function(usrArgs) {
   const fileIndex = usrArgs.length - 1;
   const userOptions = { count: 10, filePath: usrArgs[fileIndex] };
-  const [option, count] = [...usrArgs];
+  const [option, count] = usrArgs;
   if (!option.includes('-n')) {
     return userOptions;
   }
@@ -48,5 +48,5 @@ const head = function(usrArgs, read, write) {
     filterHeadLines.bind(write, { error, count, filePath })
   );
 };
-
 module.exports = { head, parseUserOptions };
+
