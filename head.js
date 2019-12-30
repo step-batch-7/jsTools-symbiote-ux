@@ -5,8 +5,9 @@ const displayHeadLines = data => process.stdout.write(data);
 const displayErrMsg = err => process.stderr.write(err);
 
 const main = function() {
+  const [, , ...usrArgs] = process.argv;
   const write = { displayHeadLines, displayErrMsg };
-  head(process.argv.slice(2), fs, write);
+  head(usrArgs, fs, write);
 };
 
 main();
