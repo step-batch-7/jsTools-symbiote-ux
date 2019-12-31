@@ -1,0 +1,13 @@
+cat ./appTests/file.txt | node head.js
+one
+two
+three
+four
+five
+six
+seven
+eight
+nine
+ten
+eleven
+twelve

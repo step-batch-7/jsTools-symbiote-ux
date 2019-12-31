@@ -7,12 +7,13 @@ const isCountValid = function(option, count) {
 };
 
 const isNotOffset = function(length, option) {
-  return length === 0 || !option.includes('-n');
+  const noArgsCount = 0;
+  return length === noArgsCount || !option.includes('-n');
 };
 
 const parseUserOptions = function(usrArgs) {
   const idx = 1;
-  const userOptions = { count: 10, filePath: usrArgs[usrArgs.length - idx] };
+  const userOptions = { count: '10', filePath: usrArgs[usrArgs.length - idx] };
   const [option, count] = [...usrArgs];
   if (isNotOffset(usrArgs.length, option)) {
     return userOptions;
@@ -42,17 +43,30 @@ const onHeadComplete = function(userOptions, err, data) {
   this.displayHeadLines(headLines);
 };
 
-const head = function(usrArgs, read, write) {
+const loadStdinContent = function(count, stream, write) {
+  let noOfLines = 1;
+  stream.setEncoding('utf8');
+  stream.on('data', userData => {
+    if (noOfLines < count) {
+      write.displayHeadLines(userData);
+      noOfLines++;
+    } else {
+      stream.pause();
+    }
+  });
+  stream.on('end', () => {});
+};
+
+const head = function(usrArgs, { read, stream }, write) {
   const { error, count, filePath } = parseUserOptions(usrArgs);
   if (error) {
-    return write.displayErrMsg(error);
+    write.displayErrMsg(error);
+    return;
   }
-  if (filePath) {
-    read.readFile(
-      filePath,
-      'utf8',
-      onHeadComplete.bind(write, { count, filePath })
-    );
+  if (!filePath) {
+    loadStdinContent(count, stream, write);
+    return;
   }
+  read(filePath, 'utf8', onHeadComplete.bind(write, { count, filePath }));
 };
 module.exports = { head, parseUserOptions };
