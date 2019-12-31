@@ -11,9 +11,17 @@ const isNotOffset = function(length, option) {
   return length === noArgsCount || !option.includes('-n');
 };
 
+const isFilePath = function(option) {
+  return !(option.includes('-n') || isIntegerNotZero(+option));
+};
+
+const getDefaultOptions = function(usrArgs) {
+  const [filePath] = usrArgs.filter(isFilePath);
+  return { count: '10', filePath: filePath };
+};
+
 const parseUserOptions = function(usrArgs) {
-  const idx = 1;
-  const userOptions = { count: '10', filePath: usrArgs[usrArgs.length - idx] };
+  const userOptions = getDefaultOptions(usrArgs);
   const [option, count] = [...usrArgs];
   if (isNotOffset(usrArgs.length, option)) {
     return userOptions;
@@ -33,22 +41,12 @@ const giveStartingLines = function(content, count) {
   return lines.slice(startingIndex, +count).join('\n');
 };
 
-const filterHeadLines = function(userOptions, err, data) {
-  const filePath = userOptions.filePath;
-  if (err) {
-    this.displayErrMsg(`head: ${filePath}: No such file or directory`);
-    return;
-  }
-  const headLines = giveStartingLines(data, userOptions.count);
-  this.displayHeadLines(headLines);
-};
-
-const loadStdinContent = function(count, stream, onComplete) {
+const readStdin = function(count, stream, onComplete) {
   let noOfLines = 0;
   stream.setEncoding('utf8');
   stream.on('data', userData => {
     noOfLines++;
-    onComplete.displayHeadLines(userData);
+    onComplete('', userData);
     if (noOfLines === +count) {
       stream.pause();
     }
@@ -56,21 +54,29 @@ const loadStdinContent = function(count, stream, onComplete) {
   stream.on('end', () => {});
 };
 
-const head = function(usrArgs, { read, stream }, onComplete) {
+const head = function(usrArgs, { read: readFile, stream }, onComplete) {
   const { error, count, filePath } = parseUserOptions(usrArgs);
   if (error) {
-    onComplete.displayErrMsg(error);
+    onComplete(error, '');
     return;
   }
-  if (!filePath) {
-    loadStdinContent(count, stream, onComplete);
-    return;
-  }
-  read(filePath, 'utf8', filterHeadLines.bind(onComplete, { count, filePath }));
+  const filterHeadLines = function(error, content) {
+    if (error) {
+      onComplete(`head: ${filePath}: No such file or directory`, '');
+      return;
+    }
+    const headLines = giveStartingLines(content, count);
+    onComplete('', headLines);
+  };
+  const read = filePath
+    ? () => readFile(filePath, 'utf8', filterHeadLines)
+    : () => readStdin(count, stream, onComplete);
+  read();
 };
+
 module.exports = {
   head,
   parseUserOptions,
   giveStartingLines,
-  loadStdinContent
+  readStdin
 };

@@ -4,12 +4,8 @@ const {
   head,
   parseUserOptions,
   giveStartingLines,
-  loadStdinContent
+  readStdin
 } = require('../src/headLib');
-const zero = 0;
-const one = 1;
-const two = 2;
-const ten = 10;
 
 describe('parseUserOptions', () => {
   it('give userArgs as objects,filePath & count(default) as key', () => {
@@ -45,28 +41,29 @@ describe('parseUserOptions', () => {
 });
 
 describe('head', () => {
+  const zero = 0;
+  const one = 1;
+  const two = 2;
   it('give error for given userArgs ,if count value is invalid', done => {
     const userArgs = ['-n', 'a', 'one.txt'];
     const read = sinon.fake();
-    const write = {
-      displayErrMsg: err => {
-        assert.strictEqual(err, 'head: illegal line count -- a');
-        done();
-      }
+    const onComplete = function(error, content) {
+      assert.strictEqual(error, 'head: illegal line count -- a');
+      assert.strictEqual(content, '');
+      done();
     };
-    head(userArgs, { read }, write);
+    head(userArgs, { read }, onComplete);
     sinon.restore();
   });
   it('should give the content of file , if userOptions are valid', done => {
     const userArgs = ['-n', '5', 'one.txt'];
-    const write = {
-      displayHeadLines: function(data) {
-        assert.strictEqual(data, 'abc');
-        done();
-      }
+    const onComplete = function(error, content) {
+      assert.strictEqual(error, '');
+      assert.strictEqual(content, 'abc');
+      done();
     };
     const read = sinon.fake();
-    head(userArgs, { read }, write);
+    head(userArgs, { read }, onComplete);
     assert.strictEqual(read.firstCall.args[zero], 'one.txt');
     assert.strictEqual(read.firstCall.args[one], 'utf8');
     read.firstCall.args[two](null, 'abc');
@@ -74,14 +71,13 @@ describe('head', () => {
   });
   it('should give error , if bad file is given', done => {
     const userArgs = ['-n', '5', 'badFile.txt'];
-    const write = {
-      displayErrMsg: err => {
-        assert.strictEqual(err, 'head: badFile.txt: No such file or directory');
-        done();
-      }
+    const onComplete = function(error, content) {
+      assert.strictEqual(error, 'head: badFile.txt: No such file or directory');
+      assert.strictEqual(content, '');
+      done();
     };
     const read = sinon.fake();
-    head(userArgs, { read }, write);
+    head(userArgs, { read }, onComplete);
     assert.strictEqual(read.firstCall.args[zero], 'badFile.txt');
     assert.strictEqual(read.firstCall.args[one], 'utf8');
     read.firstCall.args[two]('error', undefined);
@@ -89,13 +85,12 @@ describe('head', () => {
   });
   it('give content from stdin, if file is not given', done => {
     const stream = { setEncoding: sinon.fake(), on: sinon.fake() };
-    const write = {
-      displayHeadLines: function(data) {
-        assert.strictEqual(data, 'abc');
-        done();
-      }
+    const onComplete = function(error, content) {
+      assert.strictEqual(error, '');
+      assert.strictEqual(content, 'abc');
+      done();
     };
-    head([], { stream }, write);
+    head([], { stream }, onComplete);
     assert(stream.setEncoding.calledWith('utf8'));
     assert.strictEqual(stream.on.firstCall.args[zero], 'data');
     assert.strictEqual(stream.on.secondCall.args[zero], 'end');
@@ -105,6 +100,7 @@ describe('head', () => {
 });
 
 describe('giveStartingLines', () => {
+  const ten = 10;
   it('give starting ten lines of the content ,if given count is 10', () => {
     const content = '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11';
     const actual = giveStartingLines(content, ten);
@@ -132,16 +128,18 @@ describe('giveStartingLines', () => {
   });
 });
 
-describe('loadStdinContent', () => {
+describe('readStdin', () => {
+  const zero = 0;
+  const one = 1;
+  const ten = 10;
   it('give content from stdin when option is not given', done => {
     const stream = { setEncoding: sinon.fake(), on: sinon.fake() };
-    const onComplete = {
-      displayHeadLines: function(data) {
-        assert.strictEqual(data, 'abc');
-        done();
-      }
+    const onComplete = function(error, content) {
+      assert.strictEqual(error, '');
+      assert.strictEqual(content, 'abc');
+      done();
     };
-    loadStdinContent(ten, stream, onComplete);
+    readStdin(ten, stream, onComplete);
     assert(stream.setEncoding.calledWith('utf8'));
     assert.strictEqual(stream.on.firstCall.args[zero], 'data');
     assert.strictEqual(stream.on.secondCall.args[zero], 'end');
