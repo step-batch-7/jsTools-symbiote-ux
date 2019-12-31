@@ -3,7 +3,7 @@ const assert = require('chai').assert;
 const {
   head,
   parseUserOptions,
-  giveStartingLines,
+  getFirstNLines,
   readStdin
 } = require('../src/headLib');
 
@@ -62,11 +62,11 @@ describe('head', () => {
       assert.strictEqual(content, 'abc');
       done();
     };
-    const read = sinon.fake();
-    head(userArgs, { read }, onComplete);
-    assert.strictEqual(read.firstCall.args[zero], 'one.txt');
-    assert.strictEqual(read.firstCall.args[one], 'utf8');
-    read.firstCall.args[two](null, 'abc');
+    const readFile = sinon.fake();
+    head(userArgs, { readFile }, onComplete);
+    assert.strictEqual(readFile.firstCall.args[zero], 'one.txt');
+    assert.strictEqual(readFile.firstCall.args[one], 'utf8');
+    readFile.firstCall.args[two](null, 'abc');
     sinon.restore();
   });
   it('should give error , if bad file is given', done => {
@@ -76,11 +76,11 @@ describe('head', () => {
       assert.strictEqual(content, '');
       done();
     };
-    const read = sinon.fake();
-    head(userArgs, { read }, onComplete);
-    assert.strictEqual(read.firstCall.args[zero], 'badFile.txt');
-    assert.strictEqual(read.firstCall.args[one], 'utf8');
-    read.firstCall.args[two]('error', undefined);
+    const readFile = sinon.fake();
+    head(userArgs, { readFile }, onComplete);
+    assert.strictEqual(readFile.firstCall.args[zero], 'badFile.txt');
+    assert.strictEqual(readFile.firstCall.args[one], 'utf8');
+    readFile.firstCall.args[two]('error', undefined);
     sinon.restore();
   });
   it('give content from stdin, if file is not given', done => {
@@ -99,30 +99,30 @@ describe('head', () => {
   });
 });
 
-describe('giveStartingLines', () => {
+describe('getFirstNLines', () => {
   const ten = 10;
   it('give starting ten lines of the content ,if given count is 10', () => {
     const content = '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11';
-    const actual = giveStartingLines(content, ten);
+    const actual = getFirstNLines(content, ten);
     const expected = '1\n2\n3\n4\n5\n6\n7\n8\n9\n10';
     assert.strictEqual(actual, expected);
   });
   it('give all lines of content,if lines are less than given count, 10', () => {
     const content = '1\n2\n3\n4\n5\n6\n7\n8\n9';
-    const actual = giveStartingLines(content, ten);
+    const actual = getFirstNLines(content, ten);
     const expected = '1\n2\n3\n4\n5\n6\n7\n8\n9';
     assert.strictEqual(actual, expected);
   });
   it('give starting three lines of content ,if given count is 3', () => {
     const three = 3;
     const content = '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11';
-    const actual = giveStartingLines(content, three);
+    const actual = getFirstNLines(content, three);
     const expected = '1\n2\n3';
     assert.strictEqual(actual, expected);
   });
   it('gives empty if content has nothing ,if given count is 10', () => {
     const content = '';
-    const actual = giveStartingLines(content, ten);
+    const actual = getFirstNLines(content, ten);
     const expected = '';
     assert.strictEqual(actual, expected);
   });

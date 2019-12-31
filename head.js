@@ -9,7 +9,7 @@ const displayResult = function(error, content) {
 
 const main = function() {
   const [, , ...usrArgs] = process.argv;
-  const headTools = { read: readFile, stream: stdin };
+  const headTools = { readFile, stdin };
   head(usrArgs, headTools, displayResult);
 };
 

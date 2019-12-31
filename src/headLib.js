@@ -1,9 +1,10 @@
-const isIntegerNotZero = function(count) {
+const isIntegerButNotZero = function(num) {
   const illegalCount = 0;
-  return Number.isInteger(+count) && +count !== illegalCount;
+  return Number.isInteger(num) && num !== illegalCount;
 };
+
 const isCountValid = function(option, count) {
-  return option.includes('-n') && isIntegerNotZero(count);
+  return option.includes('-n') && isIntegerButNotZero(+count);
 };
 
 const isNotOffset = function(length, option) {
@@ -12,7 +13,7 @@ const isNotOffset = function(length, option) {
 };
 
 const isFilePath = function(option) {
-  return !(option.includes('-n') || isIntegerNotZero(+option));
+  return !(option.includes('-n') || isIntegerButNotZero(+option));
 };
 
 const getDefaultOptions = function(usrArgs) {
@@ -34,7 +35,7 @@ const parseUserOptions = function(usrArgs) {
   return { error: `head: illegal line count -- ${userOptions.count}` };
 };
 
-const giveStartingLines = function(content, count) {
+const getFirstNLines = function(content, count) {
   let lines = content;
   const startingIndex = 0;
   lines = lines.split('\n');
@@ -54,29 +55,30 @@ const readStdin = function(count, stream, onComplete) {
   stream.on('end', () => {});
 };
 
-const head = function(usrArgs, { read: readFile, stream }, onComplete) {
+const head = function(usrArgs, { readFile, stream }, onComplete) {
   const { error, count, filePath } = parseUserOptions(usrArgs);
   if (error) {
     onComplete(error, '');
     return;
   }
-  const filterHeadLines = function(error, content) {
+  const extractHeadLines = function(error, content) {
     if (error) {
       onComplete(`head: ${filePath}: No such file or directory`, '');
       return;
     }
-    const headLines = giveStartingLines(content, count);
+    const headLines = getFirstNLines(content, count);
     onComplete('', headLines);
   };
   const read = filePath
-    ? () => readFile(filePath, 'utf8', filterHeadLines)
+    ? () => readFile(filePath, 'utf8', extractHeadLines)
     : () => readStdin(count, stream, onComplete);
+
   read();
 };
 
 module.exports = {
   head,
   parseUserOptions,
-  giveStartingLines,
+  getFirstNLines,
   readStdin
 };
