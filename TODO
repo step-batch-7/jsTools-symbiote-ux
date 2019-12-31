@@ -1,0 +1,70 @@
+todo
+-------
+head plan flow:=>>
+
+input possibilities: version 0.1
+(a):=> node head.js <fileName>                                           //more than ten lines =>  gives starting ten lines
+(b):=> node head.js <fileName>                                           // less than ten lines => takes the whole lines in the file
+(c):=> node head.js <noFilePresent>                                      // throws error : no such file or directory
+
+
+---set environment -----
+=> make two sub-directory as src and test-- done
+=> create link between both src and test ---done
+=> add git --done
+=> add npm--done
+=> add gitIgnore file : add required field to this--done
+=> add  required dev dependencies to npm package --done
+
+-----------
+
+----tasks-----
+=> create a file in named as testHead.js ---done
+=> create a file in named as head.js --done
+=> write a test --done
+=> make main to take user Arguments --done
+=> parseUserOptions --done
+=> loadLines --done
+=> create a file --done 
+=> add content to the file --done
+=> generateHeadlines --done
+
+
+
+---------todo---------
+
+input possibilities :
+[2]:
+(a):=> node head.js -n 4 <fileName>                                      // gives starting lines according to the count value
+(b):=> node head.js -n 4 <noFilePresent>                                 // throws error : no such file or directory
+(c):=> node head.js -n a < fileName>                                     // throws error : illegal count
+
+
+-----task----
+add appTest--done
+add count feature to the parseUserOptions--done
+make changes accordingly--done
+check for illegal count-----done
+
+
+
+
+
+
+--------------------------------version 0.2------------------------------------
+handle input from stdin :=>>
+
+input possibilities:
+
+(a):=> node head.js                            // waits for the input from stdin and gives output , it repeats it for ten times
+(b):=> node head.js -n 2                      // waits for the input from stdin and gives output, it repeats it according to given count value
+(c):=> node head.js -n a                     // throws error : illegal count
+
+-------task-------
+
+
+In head =>> check if filePath is given or not after calling parseUserOptions function
+=> make a function to handle input from stdin
+=> go to stdin and wait for the userInp
+=> return contents from head according to the usrArgs
+=> handle error 

@@ -6,11 +6,15 @@ const isCountValid = function(option, count) {
   return option.includes('-n') && isIntegerNotZero(count);
 };
 
+const isNotOffset = function(length, option) {
+  return length === 0 || !option.includes('-n');
+};
+
 const parseUserOptions = function(usrArgs) {
-  const fileIndex = usrArgs.length - 1;
-  const userOptions = { count: 10, filePath: usrArgs[fileIndex] };
-  const [option, count] = usrArgs;
-  if (!option.includes('-n')) {
+  const idx = 1;
+  const userOptions = { count: 10, filePath: usrArgs[usrArgs.length - idx] };
+  const [option, count] = [...usrArgs];
+  if (isNotOffset(usrArgs.length, option)) {
     return userOptions;
   }
   const optionSeparator = 2;
@@ -21,13 +25,14 @@ const parseUserOptions = function(usrArgs) {
   return { error: `head: illegal line count -- ${userOptions.count}` };
 };
 
-const giveStartingLines = function(lines, count) {
+const giveStartingLines = function(content, count) {
+  let lines = content;
   const startingIndex = 0;
   lines = lines.split('\n');
   return lines.slice(startingIndex, +count).join('\n');
 };
 
-const filterHeadLines = function(userOptions, err, data) {
+const onHeadComplete = function(userOptions, err, data) {
   const filePath = userOptions.filePath;
   if (err) {
     this.displayErrMsg(`head: ${filePath}: No such file or directory`);
@@ -42,11 +47,12 @@ const head = function(usrArgs, read, write) {
   if (error) {
     return write.displayErrMsg(error);
   }
-  read.readFile(
-    filePath,
-    'utf8',
-    filterHeadLines.bind(write, { error, count, filePath })
-  );
+  if (filePath) {
+    read.readFile(
+      filePath,
+      'utf8',
+      onHeadComplete.bind(write, { count, filePath })
+    );
+  }
 };
 module.exports = { head, parseUserOptions };
-

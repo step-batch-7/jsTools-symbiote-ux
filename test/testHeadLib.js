@@ -32,7 +32,7 @@ describe('parseUserOptions', () => {
 
 describe('head', () => {
   it('give error for given userArgs ,if count value is invalid', () => {
-    const userArgs = ['-n', 'a', 'path'];
+    const userArgs = ['-n', 'a', 'one.txt'];
     const read = sinon.fake();
     const write = {
       displayErrMsg: err => {
@@ -43,30 +43,30 @@ describe('head', () => {
     sinon.restore();
   });
   it('should give the content of file , if userOptions are valid', () => {
-    const userArgs = ['-n', '5', 'path'];
+    const userArgs = ['-n', '5', 'one.txt'];
     const write = {
       displayHeadLines: function(data) {
-        assert.strictEqual(data, 'fileContent');
+        assert.strictEqual(data, 'abc');
       }
     };
-    const read = {};
-    const fakeRead = sinon.fake.yieldsAsync(null, 'fileContent');
+    const read = sinon.fake();
+    const fakeRead = sinon.fake.yieldsAsync(null, 'abc');
     read.readFile = fakeRead;
     read.readFile('someFile', (err, data) => {
       assert.strictEqual(err, null);
-      assert.strictEqual(data, 'fileContent');
+      assert.strictEqual(data, 'abc');
     });
     head(userArgs, read, write);
     sinon.restore();
   });
   it('should give error , if file is not present', () => {
-    const userArgs = ['-n', '5', 'noPath'];
+    const userArgs = ['-n', '5', 'badFile.txt'];
     const write = {
       displayErrMsg: err => {
-        assert.strictEqual(err, 'head: noPath: No such file or directory');
+        assert.strictEqual(err, 'head: badFile.txt: No such file or directory');
       }
     };
-    const read = {};
+    const read = sinon.fake();
     const fakeRead = sinon.fake.yieldsAsync('error', undefined);
     read.readFile = fakeRead;
     read.readFile('someFile', (err, data) => {

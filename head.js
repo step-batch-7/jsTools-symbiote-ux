@@ -1,8 +1,9 @@
 const fs = require('fs');
+const { stdout, stderr } = process;
 const { head } = require('./src/headLib');
 
-const displayHeadLines = data => process.stdout.write(data);
-const displayErrMsg = err => process.stderr.write(err);
+const displayHeadLines = data => stdout.write(data);
+const displayErrMsg = err => stderr.write(err);
 
 const main = function() {
   const [, , ...usrArgs] = process.argv;
