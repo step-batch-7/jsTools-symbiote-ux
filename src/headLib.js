@@ -50,13 +50,11 @@ const readStdin = function(count, stdinReader, onComplete) {
   stdin.on('data', userData => {
     const content = getFirstNLines(userData, count);
     if (noOfLines >= count) {
-      stdin.emit('end');
+      stdin.destroy();
     }
     noOfLines++;
     onComplete('', content);
   });
-
-  stdin.on('end', () => {});
 };
 
 const head = function(usrArgs, { readFile, stdinReader }, onComplete) {
