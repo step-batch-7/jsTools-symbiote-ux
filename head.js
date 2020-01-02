@@ -1,3 +1,4 @@
+'use strict';
 const { readFile } = require('fs');
 const { stdout, stderr, stdin } = process;
 const { head } = require('./src/headLib');

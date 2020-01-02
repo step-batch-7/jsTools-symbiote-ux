@@ -64,7 +64,19 @@ input possibilities:
 
 
 In head =>> check if filePath is given or not after calling parseUserOptions function
-=> make a function to handle input from stdin
+=> make a function to handle input from stdin -- in progress
 => go to stdin and wait for the userInp
 => return contents from head according to the usrArgs
 => handle error 
+
+
+=> divide parseUserOptions into two options : 1> parseUserOptions 2> validateUserOptions
+   aim => to make function less complex and testing easy
+
+
+=>fix readStdin function : aim => should work for piping
+                            aim => to do this call getFirstNLines in stdin
+=>remove stdin.pause   
+
+=>create read stream : aim => to pass only three arguments from main 
+                       aim => only one way of reading from file and stdin using a ReadableStream

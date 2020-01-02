@@ -1,0 +1,6 @@
+cat ./appTests/file.txt | node head.js -n 5
+one
+two
+three
+four
+five

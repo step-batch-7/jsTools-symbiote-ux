@@ -1,3 +1,4 @@
+'use strict';
 const isIntegerButNotZero = function(num) {
   const illegalCount = 0;
   return Number.isInteger(num) && num !== illegalCount;
@@ -7,7 +8,7 @@ const isCountValid = function(option, count) {
   return option.includes('-n') && isIntegerButNotZero(+count);
 };
 
-const isNotOffset = function(length, option) {
+const isFilePathGiven = function(length, option) {
   const noArgsCount = 0;
   return length === noArgsCount || !option.includes('-n');
 };
@@ -24,7 +25,7 @@ const getDefaultOptions = function(usrArgs) {
 const parseUserOptions = function(usrArgs) {
   const userOptions = getDefaultOptions(usrArgs);
   const [option, count] = [...usrArgs];
-  if (isNotOffset(usrArgs.length, option)) {
+  if (isFilePathGiven(usrArgs.length, option)) {
     return userOptions;
   }
   const optionSeparator = 2;
@@ -42,20 +43,22 @@ const getFirstNLines = function(content, count) {
   return lines.slice(startingIndex, +count).join('\n');
 };
 
-const readStdin = function(count, stream, onComplete) {
-  let noOfLines = 0;
-  stream.setEncoding('utf8');
-  stream.on('data', userData => {
-    noOfLines++;
-    onComplete('', userData);
-    if (noOfLines === +count) {
-      stream.pause();
+const readStdin = function(count, stdin, onComplete) {
+  let noOfLines = 1;
+  stdin.setEncoding('utf8');
+  stdin.on('data', userData => {
+    const content = getFirstNLines(userData, count);
+    if (noOfLines >= count) {
+      stdin.emit('end');
     }
+    noOfLines++;
+    onComplete('', content);
   });
-  stream.on('end', () => {});
+
+  stdin.on('end', () => {});
 };
 
-const head = function(usrArgs, { readFile, stream }, onComplete) {
+const head = function(usrArgs, { readFile, stdin }, onComplete) {
   const { error, count, filePath } = parseUserOptions(usrArgs);
   if (error) {
     onComplete(error, '');
@@ -71,7 +74,7 @@ const head = function(usrArgs, { readFile, stream }, onComplete) {
   };
   const read = filePath
     ? () => readFile(filePath, 'utf8', extractHeadLines)
-    : () => readStdin(count, stream, onComplete);
+    : () => readStdin(count, stdin, onComplete);
 
   read();
 };

@@ -84,17 +84,17 @@ describe('head', () => {
     sinon.restore();
   });
   it('give content from stdin, if file is not given', done => {
-    const stream = { setEncoding: sinon.fake(), on: sinon.fake() };
+    const stdin = { setEncoding: sinon.fake(), on: sinon.fake() };
     const onComplete = function(error, content) {
       assert.strictEqual(error, '');
       assert.strictEqual(content, 'abc');
       done();
     };
-    head([], { stream }, onComplete);
-    assert(stream.setEncoding.calledWith('utf8'));
-    assert.strictEqual(stream.on.firstCall.args[zero], 'data');
-    assert.strictEqual(stream.on.secondCall.args[zero], 'end');
-    stream.on.firstCall.args[one]('abc');
+    head([], { stdin }, onComplete);
+    assert(stdin.setEncoding.calledWith('utf8'));
+    assert.strictEqual(stdin.on.firstCall.args[zero], 'data');
+    assert.strictEqual(stdin.on.secondCall.args[zero], 'end');
+    stdin.on.firstCall.args[one]('abc');
     sinon.restore();
   });
 });
