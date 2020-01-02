@@ -14,4 +14,4 @@ const main = function() {
   head(usrArgs, headTools, displayResult);
 };
 
-main();
+main()

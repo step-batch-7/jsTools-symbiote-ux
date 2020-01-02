@@ -131,15 +131,18 @@ describe('getFirstNLines', () => {
 describe('readStdin', () => {
   const zero = 0;
   const one = 1;
-  const ten = 10;
   it('give content from stdin when option is not given', done => {
-    const stream = { setEncoding: sinon.fake(), on: sinon.fake() };
+    const stream = {
+      setEncoding: sinon.fake(),
+      on: sinon.fake(),
+      emit: sinon.fake()
+    };
     const onComplete = function(error, content) {
       assert.strictEqual(error, '');
       assert.strictEqual(content, 'abc');
       done();
     };
-    readStdin(ten, stream, onComplete);
+    readStdin(one, stream, onComplete);
     assert(stream.setEncoding.calledWith('utf8'));
     assert.strictEqual(stream.on.firstCall.args[zero], 'data');
     assert.strictEqual(stream.on.secondCall.args[zero], 'end');

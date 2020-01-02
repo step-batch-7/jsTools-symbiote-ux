@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "nyc mocha && eslint src test"
+    "test": "mocha && eslint src test *.js"
   },
   "repository": {
     "type": "git",
