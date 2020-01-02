@@ -43,7 +43,8 @@ const getFirstNLines = function(content, count) {
   return lines.slice(startingIndex, +count).join('\n');
 };
 
-const readStdin = function(count, stdin, onComplete) {
+const readStdin = function(count, stdinReader, onComplete) {
+  const stdin = stdinReader();
   let noOfLines = 1;
   stdin.setEncoding('utf8');
   stdin.on('data', userData => {
@@ -58,7 +59,7 @@ const readStdin = function(count, stdin, onComplete) {
   stdin.on('end', () => {});
 };
 
-const head = function(usrArgs, { readFile, stdin }, onComplete) {
+const head = function(usrArgs, { readFile, stdinReader }, onComplete) {
   const { error, count, filePath } = parseUserOptions(usrArgs);
   if (error) {
     onComplete(error, '');
@@ -74,7 +75,7 @@ const head = function(usrArgs, { readFile, stdin }, onComplete) {
   };
   const read = filePath
     ? () => readFile(filePath, 'utf8', extractHeadLines)
-    : () => readStdin(count, stdin, onComplete);
+    : () => readStdin(count, stdinReader, onComplete);
 
   read();
 };

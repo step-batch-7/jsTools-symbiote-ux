@@ -90,7 +90,7 @@ describe('head', () => {
       assert.strictEqual(content, 'abc');
       done();
     };
-    head([], { stdin }, onComplete);
+    head([], { stdinReader: () => stdin }, onComplete);
     assert(stdin.setEncoding.calledWith('utf8'));
     assert.strictEqual(stdin.on.firstCall.args[zero], 'data');
     assert.strictEqual(stdin.on.secondCall.args[zero], 'end');
@@ -142,7 +142,7 @@ describe('readStdin', () => {
       assert.strictEqual(content, 'abc');
       done();
     };
-    readStdin(one, stream, onComplete);
+    readStdin(one, () => stream, onComplete);
     assert(stream.setEncoding.calledWith('utf8'));
     assert.strictEqual(stream.on.firstCall.args[zero], 'data');
     assert.strictEqual(stream.on.secondCall.args[zero], 'end');

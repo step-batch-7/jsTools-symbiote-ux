@@ -10,8 +10,8 @@ const displayResult = function(error, content) {
 
 const main = function() {
   const [, , ...usrArgs] = process.argv;
-  const headTools = { readFile, stdin };
-  head(usrArgs, headTools, displayResult);
+  const reader = { readFile, stdinReader: () => stdin };
+  head(usrArgs, reader, displayResult);
 };
 
-main()
+main();

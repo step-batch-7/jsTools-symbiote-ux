@@ -1,10 +1,12 @@
 {
-  "name": "headplan",
+  "name": "jsTools-symbiote-ux",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "head.js",
   "directories": {
-    "doc": "docs"
+    "test": "test",
+    "allTests": "mocha && ./runAppTests.sh appTest/*.test",
+    "lint": "curl -s  https://raw.githubusercontent.com/blpabhishek/eslintrc-config/master/.eslintrc.json -o .eslintrc.json && eslint src test *.js"
   },
   "scripts": {
     "test": "mocha && eslint src test *.js"
@@ -13,15 +15,14 @@
     "type": "git",
     "url": "git+https://github.com/step-batch-7/jsTools-symbiote-ux.git"
   },
-  "author": "Saurabh",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/step-batch-7/jsTools-symbiote-ux/issues"
   },
   "homepage": "https://github.com/step-batch-7/jsTools-symbiote-ux#readme",
   "devDependencies": {
-    "chai": "^4.2.0",
-    "nyc": "^14.1.1"
+    "chai": "^4.2.0"
   },
   "dependencies": {}
 }
