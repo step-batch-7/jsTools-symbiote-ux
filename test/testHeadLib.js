@@ -10,32 +10,32 @@ const {
 describe('parseUserOptions', () => {
   it('give userArgs as objects,filePath & count(default) as key', () => {
     const actual = parseUserOptions(['file1']);
-    const expected = {count: '10', filePath: 'file1'};
+    const expected = { count: '10', filePath: 'file1' };
     assert.deepStrictEqual(actual, expected);
   });
   it('give userArgs as objects ,filePath and count as key', () => {
     const actual = parseUserOptions(['-n', '3', 'file1']);
-    const expected = {count: '3', filePath: 'file1'};
+    const expected = { count: '3', filePath: 'file1' };
     assert.deepStrictEqual(actual, expected);
   });
   it('give error message in object, if count value is not valid', () => {
     const actual = parseUserOptions(['-n', 'a', 'file1']);
-    const expected = {error: 'head: illegal line count -- a'};
+    const expected = { error: 'head: illegal line count -- a' };
     assert.deepStrictEqual(actual, expected);
   });
   it('give error message in object,if count value is zero', () => {
     const actual = parseUserOptions(['-n', '0', 'file1']);
-    const expected = {error: 'head: illegal line count -- 0'};
+    const expected = { error: 'head: illegal line count -- 0' };
     assert.deepStrictEqual(actual, expected);
   });
   it('give userArgs as objects,if both(-n & count) are given together', () => {
     const actual = parseUserOptions(['-n5', 'file1']);
-    const expected = {count: '5', filePath: 'file1'};
+    const expected = { count: '5', filePath: 'file1' };
     assert.deepStrictEqual(actual, expected);
   });
   it('give filePath as undefined with count, if no args are given', () => {
     const actual = parseUserOptions([]);
-    const expected = {count: '10', filePath: undefined};
+    const expected = { count: '10', filePath: undefined };
     assert.deepStrictEqual(actual, expected);
   });
 });
@@ -52,7 +52,7 @@ describe('head', () => {
       assert.strictEqual(content, '');
       done();
     };
-    head(userArgs, {read}, onComplete);
+    head(userArgs, { read }, onComplete);
     sinon.restore();
   });
   it('should give the content of file , if userOptions are valid', done => {
@@ -63,7 +63,7 @@ describe('head', () => {
       done();
     };
     const readFile = sinon.fake();
-    head(userArgs, {readFile}, onComplete);
+    head(userArgs, { readFile }, onComplete);
     assert.strictEqual(readFile.firstCall.args[zero], 'one.txt');
     assert.strictEqual(readFile.firstCall.args[one], 'utf8');
     readFile.firstCall.args[two](null, 'abc');
@@ -77,20 +77,20 @@ describe('head', () => {
       done();
     };
     const readFile = sinon.fake();
-    head(userArgs, {readFile}, onComplete);
+    head(userArgs, { readFile }, onComplete);
     assert.strictEqual(readFile.firstCall.args[zero], 'badFile.txt');
     assert.strictEqual(readFile.firstCall.args[one], 'utf8');
     readFile.firstCall.args[two]('error', undefined);
     sinon.restore();
   });
   it('give content from stdin, if file is not given', done => {
-    const stdin = {setEncoding: sinon.fake(), on: sinon.fake()};
+    const stdin = { setEncoding: sinon.fake(), on: sinon.fake() };
     const onComplete = function(error, content) {
       assert.strictEqual(error, '');
       assert.strictEqual(content, 'abc');
       done();
     };
-    head([], {stdinReader: () => stdin}, onComplete);
+    head([], { stdinReader: () => stdin }, onComplete);
     assert(stdin.setEncoding.calledWith('utf8'));
     assert.strictEqual(stdin.on.firstCall.args[zero], 'data');
     stdin.on.firstCall.args[one]('abc');
@@ -128,23 +128,20 @@ describe('getFirstNLines', () => {
 });
 
 describe('readStdin', () => {
-  const zero = 0;
-  const one = 1;
   it('give content from stdin when option is not given', done => {
     const stream = {
       setEncoding: sinon.fake(),
       on: sinon.fake(),
       destroy: sinon.fake()
     };
-    const onComplete = function(error, content) {
-      assert.strictEqual(error, '');
-      assert.strictEqual(content, 'abc');
-      done();
-    };
-    readStdin(one, () => stream, onComplete);
+    const onComplete = sinon.fake();
+    readStdin(1, () => stream, onComplete);
     assert(stream.setEncoding.calledWith('utf8'));
-    assert.strictEqual(stream.on.firstCall.args[zero], 'data');
-    stream.on.firstCall.args[one]('abc');
-    sinon.restore();
+    assert.ok(stream.on.firstCall.calledWith('data'));
+    stream.on.firstCall.lastArg('abc');
+    assert.ok(onComplete.calledWith('', 'abc'));
+    assert.ok(stream.on.calledOnce);
+    assert.ok(stream.destroy.calledOnce);
+    done();
   });
 });
