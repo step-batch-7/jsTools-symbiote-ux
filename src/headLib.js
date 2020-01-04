@@ -19,7 +19,7 @@ const isFilePath = function(option) {
 
 const getDefaultOptions = function(usrArgs) {
   const [filePath] = usrArgs.filter(isFilePath);
-  return { count: '10', filePath: filePath };
+  return {count: '10', filePath: filePath};
 };
 
 const parseUserOptions = function(usrArgs) {
@@ -33,7 +33,7 @@ const parseUserOptions = function(usrArgs) {
   if (isCountValid(option, userOptions.count)) {
     return userOptions;
   }
-  return { error: `head: illegal line count -- ${userOptions.count}` };
+  return {error: `head: illegal line count -- ${userOptions.count}`};
 };
 
 const getFirstNLines = function(content, count) {
@@ -57,8 +57,8 @@ const readStdin = function(count, stdinReader, onComplete) {
   });
 };
 
-const head = function(usrArgs, { readFile, stdinReader }, onComplete) {
-  const { error, count, filePath } = parseUserOptions(usrArgs);
+const head = function(usrArgs, {readFile, stdinReader}, onComplete) {
+  const {error, count, filePath} = parseUserOptions(usrArgs);
   if (error) {
     onComplete(error, '');
     return;
