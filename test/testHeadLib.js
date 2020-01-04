@@ -10,32 +10,32 @@ const {
 describe('parseUserOptions', () => {
   it('give userArgs as objects,filePath & count(default) as key', () => {
     const actual = parseUserOptions(['file1']);
-    const expected = { count: '10', filePath: 'file1' };
+    const expected = {count: '10', filePath: 'file1'};
     assert.deepStrictEqual(actual, expected);
   });
   it('give userArgs as objects ,filePath and count as key', () => {
     const actual = parseUserOptions(['-n', '3', 'file1']);
-    const expected = { count: '3', filePath: 'file1' };
+    const expected = {count: '3', filePath: 'file1'};
     assert.deepStrictEqual(actual, expected);
   });
   it('give error message in object, if count value is not valid', () => {
     const actual = parseUserOptions(['-n', 'a', 'file1']);
-    const expected = { error: 'head: illegal line count -- a' };
+    const expected = {error: 'head: illegal line count -- a'};
     assert.deepStrictEqual(actual, expected);
   });
   it('give error message in object,if count value is zero', () => {
     const actual = parseUserOptions(['-n', '0', 'file1']);
-    const expected = { error: 'head: illegal line count -- 0' };
+    const expected = {error: 'head: illegal line count -- 0'};
     assert.deepStrictEqual(actual, expected);
   });
   it('give userArgs as objects,if both(-n & count) are given together', () => {
     const actual = parseUserOptions(['-n5', 'file1']);
-    const expected = { count: '5', filePath: 'file1' };
+    const expected = {count: '5', filePath: 'file1'};
     assert.deepStrictEqual(actual, expected);
   });
   it('give filePath as undefined with count, if no args are given', () => {
     const actual = parseUserOptions([]);
-    const expected = { count: '10', filePath: undefined };
+    const expected = {count: '10', filePath: undefined};
     assert.deepStrictEqual(actual, expected);
   });
 });
@@ -58,7 +58,7 @@ describe('head', () => {
       done();
     };
     const readFile = sinon.fake();
-    head(userArgs, { readFile }, onComplete);
+    head(userArgs, {readFile}, onComplete);
     assert.strictEqual(readFile.firstCall.args[0], 'one.txt');
     assert.strictEqual(readFile.firstCall.args[1], 'utf8');
     readFile.firstCall.args[2](null, 'abc');
@@ -72,20 +72,20 @@ describe('head', () => {
       done();
     };
     const readFile = sinon.fake();
-    head(userArgs, { readFile }, onComplete);
+    head(userArgs, {readFile}, onComplete);
     assert.strictEqual(readFile.firstCall.args[0], 'badFile.txt');
     assert.strictEqual(readFile.firstCall.args[1], 'utf8');
     readFile.firstCall.args[2]('error', undefined);
     sinon.restore();
   });
   it('give content from stdin, if file is not given', done => {
-    const stdin = { setEncoding: sinon.fake(), on: sinon.fake() };
+    const stdin = {setEncoding: sinon.fake(), on: sinon.fake()};
     const onComplete = function (error, content) {
       assert.strictEqual(error, '');
       assert.strictEqual(content, 'abc');
       done();
     };
-    head([], { stdinReader: () => stdin }, onComplete);
+    head([], {stdinReader: () => stdin}, onComplete);
     assert(stdin.setEncoding.calledWith('utf8'));
     assert.strictEqual(stdin.on.firstCall.args[0], 'data');
     stdin.on.firstCall.args[1]('abc');
