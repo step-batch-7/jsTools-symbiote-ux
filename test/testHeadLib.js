@@ -99,29 +99,27 @@ describe('head', () => {
 });
 
 describe('getFirstNLines', () => {
-  const ten = 10;
   it('give starting ten lines of the content ,if given count is 10', () => {
     const content = '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11';
-    const actual = getFirstNLines(content, ten);
+    const actual = getFirstNLines(content, 10);
     const expected = '1\n2\n3\n4\n5\n6\n7\n8\n9\n10';
     assert.strictEqual(actual, expected);
   });
   it('give all lines of content,if lines are less than given count, 10', () => {
     const content = '1\n2\n3\n4\n5\n6\n7\n8\n9';
-    const actual = getFirstNLines(content, ten);
+    const actual = getFirstNLines(content, 10);
     const expected = '1\n2\n3\n4\n5\n6\n7\n8\n9';
     assert.strictEqual(actual, expected);
   });
   it('give starting three lines of content ,if given count is 3', () => {
-    const three = 3;
     const content = '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11';
-    const actual = getFirstNLines(content, three);
+    const actual = getFirstNLines(content, 3);
     const expected = '1\n2\n3';
     assert.strictEqual(actual, expected);
   });
   it('gives empty if content has nothing ,if given count is 10', () => {
     const content = '';
-    const actual = getFirstNLines(content, ten);
+    const actual = getFirstNLines(content, 10);
     const expected = '';
     assert.strictEqual(actual, expected);
   });
