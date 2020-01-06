@@ -2,10 +2,10 @@ const sinon = require('sinon');
 const assert = require('chai').assert;
 const {
   head,
-  read,
+  pickStream,
   parseUserOptions,
   getFirstNLines,
-  readStdin
+  readFromStream
 } = require('../src/headLib');
 
 describe('parseUserOptions', () => {
@@ -95,7 +95,7 @@ describe('getFirstNLines', () => {
   });
 });
 
-describe('readStdin', () => {
+describe('readFromStream', () => {
   it('give content from stdin when option is not given', done => {
     const setEncoding = sinon.fake();
     const on = sinon.fake();
@@ -104,7 +104,7 @@ describe('readStdin', () => {
     const onComplete = sinon.fake();
     const count = 1;
     const filePath = undefined;
-    readStdin({count, filePath}, stream, onComplete);
+    readFromStream({count, filePath}, stream, onComplete);
     assert(setEncoding.calledWith('utf8'));
     assert.ok(on.firstCall.calledWith('data'));
     on.firstCall.lastArg('abc');
@@ -120,7 +120,7 @@ describe('readStdin', () => {
     const onComplete = sinon.fake();
     const count = 1;
     const filePath = 'filePath';
-    readStdin({count, filePath}, stream, onComplete);
+    readFromStream({count, filePath}, stream, onComplete);
     assert(setEncoding.calledWith('utf8'));
     assert.ok(on.firstCall.calledWith('data'));
     assert.ok(on.secondCall.calledWith('error'));
@@ -133,17 +133,17 @@ describe('readStdin', () => {
   });
 });
 
-describe('read', () => {
+describe('pickStream', () => {
   it('give createReadStream if filePath is given', () => {
     const createReadStream = sinon.fake.returns('createReadStream');
-    const actual = read('one.txt', createReadStream);
+    const actual = pickStream('one.txt', createReadStream);
     assert.strictEqual(actual, 'createReadStream');
     assert.ok(createReadStream.calledWith('one.txt'));
   });
   it('give stdin if filePath is not given', () => {
     const createReadStream = 'createReadStream';
     const stdin = 'stdin';
-    const actual = read(undefined, createReadStream, stdin);
+    const actual = pickStream(undefined, createReadStream, stdin);
     assert.strictEqual(actual, stdin);
   });
 });

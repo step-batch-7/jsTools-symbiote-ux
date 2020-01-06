@@ -43,7 +43,7 @@ const getFirstNLines = function(content, count) {
   return lines.slice(startingIndex, +count).join('\n');
 };
 
-const readStdin = function({count, filePath}, stream, onComplete) {
+const readFromStream = function({count, filePath}, stream, onComplete) {
   let noOfLines = 1;
   stream.setEncoding('utf8');
   stream.on('data', userData => {
@@ -58,7 +58,7 @@ const readStdin = function({count, filePath}, stream, onComplete) {
     onComplete(`head: ${filePath}: No such file or directory`, '');
   });
 };
-const read = function(filePath, createReadStream, stdin) {
+const pickStream = function(filePath, createReadStream, stdin) {
   return filePath ? createReadStream(filePath) : stdin;
 };
 
@@ -69,14 +69,14 @@ const head = function(usrArgs, {createReadStream, stdin}, onComplete) {
     return;
   }
   const userOptions = {count, filePath};
-  const myReader = read(filePath, createReadStream, stdin);
-  readStdin(userOptions, myReader, onComplete);
+  const reader = pickStream(filePath, createReadStream, stdin);
+  readFromStream(userOptions, reader, onComplete);
 };
 
 module.exports = {
   head,
   parseUserOptions,
   getFirstNLines,
-  readStdin,
-  read
+  readFromStream,
+  pickStream
 };
