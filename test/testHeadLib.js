@@ -2,6 +2,7 @@ const sinon = require('sinon');
 const assert = require('chai').assert;
 const {
   head,
+  read,
   parseUserOptions,
   getFirstNLines,
   readStdin
@@ -43,53 +44,27 @@ describe('parseUserOptions', () => {
 describe('head', () => {
   it('give error for given userArgs ,if count value is invalid', done => {
     const userArgs = ['-n', 'a', 'one.txt'];
-    const readFile = sinon.fake();
     const onComplete = sinon.fake();
-    const stdinReader = {};
-    head(userArgs, {readFile, stdinReader}, onComplete);
+    head(userArgs, {}, onComplete);
     assert.ok(onComplete.calledWith('head: illegal line count -- a', ''));
     done();
   });
-  it('should give the content of file , if userOptions are valid', done => {
+  it('should give the content of file,if userOptions are valid', done => {
     const userArgs = ['-n', '5', 'one.txt'];
-    const onComplete = function (error, content) {
-      assert.strictEqual(error, '');
-      assert.strictEqual(content, 'abc');
-      done();
+    const setEncoding = sinon.fake();
+    const on = sinon.fake();
+    const createReadStream = filePath => {
+      assert.strictEqual(filePath, 'one.txt');
+      return {setEncoding, on};
     };
-    const readFile = sinon.fake();
-    head(userArgs, {readFile}, onComplete);
-    assert.strictEqual(readFile.firstCall.args[0], 'one.txt');
-    assert.strictEqual(readFile.firstCall.args[1], 'utf8');
-    readFile.firstCall.args[2](null, 'abc');
-    sinon.restore();
-  });
-  it('should give error , if bad file is given', done => {
-    const userArgs = ['-n', '5', 'badFile.txt'];
-    const onComplete = function (error, content) {
-      assert.strictEqual(error, 'head: badFile.txt: No such file or directory');
-      assert.strictEqual(content, '');
-      done();
-    };
-    const readFile = sinon.fake();
-    head(userArgs, {readFile}, onComplete);
-    assert.strictEqual(readFile.firstCall.args[0], 'badFile.txt');
-    assert.strictEqual(readFile.firstCall.args[1], 'utf8');
-    readFile.firstCall.args[2]('error', undefined);
-    sinon.restore();
-  });
-  it('give content from stdin, if file is not given', done => {
-    const stdin = {setEncoding: sinon.fake(), on: sinon.fake()};
-    const onComplete = function (error, content) {
-      assert.strictEqual(error, '');
-      assert.strictEqual(content, 'abc');
-      done();
-    };
-    head([], {stdinReader: () => stdin}, onComplete);
-    assert(stdin.setEncoding.calledWith('utf8'));
-    assert.strictEqual(stdin.on.firstCall.args[0], 'data');
-    stdin.on.firstCall.args[1]('abc');
-    sinon.restore();
+    const onComplete = sinon.fake();
+    const stdin = {};
+    head(userArgs, {createReadStream, stdin}, onComplete);
+    assert(setEncoding.calledWith('utf8'));
+    assert.ok(on.firstCall.calledWith('data'));
+    on.firstCall.lastArg('abc');
+    assert.ok(onComplete.calledWith('', 'abc'));
+    done();
   });
 });
 
@@ -122,19 +97,53 @@ describe('getFirstNLines', () => {
 
 describe('readStdin', () => {
   it('give content from stdin when option is not given', done => {
-    const stream = {
-      setEncoding: sinon.fake(),
-      on: sinon.fake(),
-      destroy: sinon.fake()
-    };
+    const setEncoding = sinon.fake();
+    const on = sinon.fake();
+    const destroy = sinon.fake();
+    const stream = {setEncoding, on, destroy};
     const onComplete = sinon.fake();
-    readStdin(1, () => stream, onComplete);
-    assert(stream.setEncoding.calledWith('utf8'));
-    assert.ok(stream.on.firstCall.calledWith('data'));
-    stream.on.firstCall.lastArg('abc');
+    const count = 1;
+    const filePath = undefined;
+    readStdin({count, filePath}, stream, onComplete);
+    assert(setEncoding.calledWith('utf8'));
+    assert.ok(on.firstCall.calledWith('data'));
+    on.firstCall.lastArg('abc');
     assert.ok(onComplete.calledWith('', 'abc'));
-    assert.ok(stream.on.calledOnce);
-    assert.ok(stream.destroy.calledOnce);
+    assert.ok(on.calledTwice);
+    assert.ok(destroy.calledOnce);
     done();
+  });
+  it('give error when file is not present', done => {
+    const setEncoding = sinon.fake();
+    const on = sinon.fake();
+    const stream = {setEncoding, on};
+    const onComplete = sinon.fake();
+    const count = 1;
+    const filePath = 'filePath';
+    readStdin({count, filePath}, stream, onComplete);
+    assert(setEncoding.calledWith('utf8'));
+    assert.ok(on.firstCall.calledWith('data'));
+    assert.ok(on.secondCall.calledWith('error'));
+    on.secondCall.lastArg('error');
+    assert.ok(
+      onComplete.calledWith('head: filePath: No such file or directory', '')
+    );
+    assert.ok(on.calledTwice);
+    done();
+  });
+});
+
+describe('read', () => {
+  it('give createReadStream if filePath is given', () => {
+    const createReadStream = sinon.fake.returns('createReadStream');
+    const actual = read('one.txt', createReadStream);
+    assert.strictEqual(actual, 'createReadStream');
+    assert.ok(createReadStream.calledWith('one.txt'));
+  });
+  it('give stdin if filePath is not given', () => {
+    const createReadStream = 'createReadStream';
+    const stdin = 'stdin';
+    const actual = read(undefined, createReadStream, stdin);
+    assert.strictEqual(actual, stdin);
   });
 });

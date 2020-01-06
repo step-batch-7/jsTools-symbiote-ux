@@ -1,5 +1,5 @@
 'use strict';
-const {readFile} = require('fs');
+const {createReadStream} = require('fs');
 const {stdout, stderr, stdin} = process;
 const {head} = require('./src/headLib');
 
@@ -10,8 +10,8 @@ const displayResult = function(error, content) {
 
 const main = function() {
   const [, , ...usrArgs] = process.argv;
-  const reader = {readFile, stdinReader: () => stdin};
-  head(usrArgs, reader, displayResult);
+  const stream = {createReadStream, stdin};
+  head(usrArgs, stream, displayResult);
 };
 
 main();

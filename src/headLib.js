@@ -43,44 +43,40 @@ const getFirstNLines = function(content, count) {
   return lines.slice(startingIndex, +count).join('\n');
 };
 
-const readStdin = function(count, stdinReader, onComplete) {
-  const stdin = stdinReader();
+const readStdin = function({count, filePath}, stream, onComplete) {
   let noOfLines = 1;
-  stdin.setEncoding('utf8');
-  stdin.on('data', userData => {
+  stream.setEncoding('utf8');
+  stream.on('data', userData => {
     const content = getFirstNLines(userData, count);
     if (noOfLines >= count) {
-      stdin.destroy();
+      stream.destroy();
     }
     noOfLines++;
     onComplete('', content);
   });
+  stream.on('error', () => {
+    onComplete(`head: ${filePath}: No such file or directory`, '');
+  });
+};
+const read = function(filePath, createReadStream, stdin) {
+  return filePath ? createReadStream(filePath) : stdin;
 };
 
-const head = function(usrArgs, {readFile, stdinReader}, onComplete) {
+const head = function(usrArgs, {createReadStream, stdin}, onComplete) {
   const {error, count, filePath} = parseUserOptions(usrArgs);
   if (error) {
     onComplete(error, '');
     return;
   }
-  const extractHeadLines = function(error, content) {
-    if (error) {
-      onComplete(`head: ${filePath}: No such file or directory`, '');
-      return;
-    }
-    const headLines = getFirstNLines(content, count);
-    onComplete('', headLines);
-  };
-  const read = filePath
-    ? () => readFile(filePath, 'utf8', extractHeadLines)
-    : () => readStdin(count, stdinReader, onComplete);
-
-  read();
+  const userOptions = {count, filePath};
+  const myReader = read(filePath, createReadStream, stdin);
+  readStdin(userOptions, myReader, onComplete);
 };
 
 module.exports = {
   head,
   parseUserOptions,
   getFirstNLines,
-  readStdin
+  readStdin,
+  read
 };
