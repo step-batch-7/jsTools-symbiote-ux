@@ -10,8 +10,8 @@ const displayResult = function(error, content) {
 
 const main = function() {
   const [, , ...usrArgs] = process.argv;
-  const stream = {createReadStream, stdin};
-  head(usrArgs, stream, displayResult);
+  const streams = {createReadStream, stdin};
+  head(usrArgs, streams, displayResult);
 };
 
 main();
