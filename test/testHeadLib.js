@@ -2,7 +2,6 @@ const sinon = require('sinon');
 const assert = require('chai').assert;
 const {
   head,
-  pickStream,
   parseUserOptions,
   getFirstNLines,
   readFromStream
@@ -130,20 +129,5 @@ describe('readFromStream', () => {
     );
     assert.ok(on.calledTwice);
     done();
-  });
-});
-
-describe('pickStream', () => {
-  it('give createReadStream if filePath is given', () => {
-    const createReadStream = sinon.fake.returns('createReadStream');
-    const actual = pickStream('one.txt', createReadStream);
-    assert.strictEqual(actual, 'createReadStream');
-    assert.ok(createReadStream.calledWith('one.txt'));
-  });
-  it('give stdin if filePath is not given', () => {
-    const createReadStream = 'createReadStream';
-    const stdin = 'stdin';
-    const actual = pickStream(undefined, createReadStream, stdin);
-    assert.strictEqual(actual, stdin);
   });
 });

@@ -1,4 +1,6 @@
 'use strict';
+const StreamPicker = require('./streamPicker');
+
 const isIntegerButNotZero = function(num) {
   const illegalCount = 0;
   return Number.isInteger(num) && num !== illegalCount;
@@ -58,9 +60,6 @@ const readFromStream = function({count, filePath}, stream, onComplete) {
     onComplete(`head: ${filePath}: No such file or directory`, '');
   });
 };
-const pickStream = function(filePath, createReadStream, stdin) {
-  return filePath ? createReadStream(filePath) : stdin;
-};
 
 const head = function(usrArgs, {createReadStream, stdin}, onComplete) {
   const {error, count, filePath} = parseUserOptions(usrArgs);
@@ -69,7 +68,8 @@ const head = function(usrArgs, {createReadStream, stdin}, onComplete) {
     return;
   }
   const userOptions = {count, filePath};
-  const reader = pickStream(filePath, createReadStream, stdin);
+  const stream = new StreamPicker(stdin, createReadStream);
+  const reader = stream.pick(filePath);
   readFromStream(userOptions, reader, onComplete);
 };
 
@@ -78,5 +78,4 @@ module.exports = {
   parseUserOptions,
   getFirstNLines,
   readFromStream,
-  pickStream
 };
