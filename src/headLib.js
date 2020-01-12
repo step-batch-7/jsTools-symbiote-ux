@@ -77,5 +77,5 @@ module.exports = {
   head,
   parseUserOptions,
   getFirstNLines,
-  readFromStream,
+  readFromStream
 };
